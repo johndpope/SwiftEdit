@@ -81,8 +81,9 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
     var textStorage: NSTextStorage?
     var textView: NSTextView?
     var scrollView: NSScrollView?
-     var debugScrollView: NSScrollView?
-
+    var debugScrollView: NSScrollView?
+   let app = NSApplication.sharedApplication().delegate as! AppDelegate
+    
     convenience init(textStorage: NSTextStorage, textView: NSTextView, scrollView: NSScrollView ) {
         self.init()
         self.textStorage = textStorage
@@ -111,10 +112,7 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
         guard let tokens = parseString(textStorage!.string) else {
             return
         }
-        let app = NSApplication.sharedApplication().delegate as! AppDelegate
-        app.debugTextView?.string  = tokens.description
-
-        
+       
         let range = visibleRange()
         let layoutManagerList = textStorage!.layoutManagers as [NSLayoutManager]
         for layoutManager in layoutManagerList {
@@ -127,6 +125,8 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
                     forCharacterRange: token.range)
             }
         }
+        
+         debugParseString(textStorage!.string)
     }
 
     func parseString(string: String) -> [Token]? {
@@ -158,6 +158,29 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
             
             return Token(kind: type, range: NSRange(location: offset, length: length))
         }
+    }
+    
+    func debugParseString(string: String) {
+        // Shell out to SourceKitten to obtain syntax map for string
+        if(string.isEmpty){
+            return
+        }
+        
+        let syntaxPipe = NSPipe()
+        
+        let syntaxTask = NSTask()
+        syntaxTask.launchPath = "/usr/local/bin/sourcekitten"
+        syntaxTask.arguments = ["structure", "--text", string]
+        syntaxTask.standardOutput = syntaxPipe
+        
+        syntaxTask.launch()
+        syntaxTask.waitUntilExit()
+        
+        let syntaxMap = NSMutableString(data: syntaxPipe.fileHandleForReading.readDataToEndOfFile(),
+            encoding: NSUTF8StringEncoding)
+        
+       
+        app.debugTextView?.string  = String(syntaxMap)
     }
 
     override func textStorageDidProcessEditing(aNotification: NSNotification) {
