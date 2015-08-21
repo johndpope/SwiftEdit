@@ -81,8 +81,9 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
     var textStorage: NSTextStorage?
     var textView: NSTextView?
     var scrollView: NSScrollView?
+     var debugScrollView: NSScrollView?
 
-    convenience init(textStorage: NSTextStorage, textView: NSTextView, scrollView: NSScrollView) {
+    convenience init(textStorage: NSTextStorage, textView: NSTextView, scrollView: NSScrollView ) {
         self.init()
         self.textStorage = textStorage
         self.scrollView = scrollView
@@ -110,7 +111,10 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
         guard let tokens = parseString(textStorage!.string) else {
             return
         }
+        let app = NSApplication.sharedApplication().delegate as! AppDelegate
+        app.debugTextView?.string  = tokens.description
 
+        
         let range = visibleRange()
         let layoutManagerList = textStorage!.layoutManagers as [NSLayoutManager]
         for layoutManager in layoutManagerList {
@@ -150,6 +154,8 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
             let offset = token["offset"] as! Int
             let length = token["length"] as! Int
             let type = token["type"] as! String
+            
+            
             return Token(kind: type, range: NSRange(location: offset, length: length))
         }
     }

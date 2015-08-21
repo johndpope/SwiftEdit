@@ -13,8 +13,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet var window: NSWindow?
     @IBOutlet var scrollView: NSScrollView?
+    @IBOutlet var debugScrollView: NSScrollView?
+    @IBOutlet var debugTextView: DebugTextView?
+    
     var textView: NSTextView { return scrollView!.contentView.documentView as! NSTextView }
     var rulerView: RulerView?
+    
     var syntaxHighligher: SwiftSyntaxHighligher?
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
@@ -30,5 +34,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         scrollView?.rulersVisible = true
 
         syntaxHighligher = SwiftSyntaxHighligher(textStorage: textView.textStorage!, textView: textView, scrollView: scrollView!)
+        
+        
+        
+        
     }
 }

@@ -8,6 +8,8 @@
 
 import Cocoa
 
+
+
 class TextView: NSTextView {
     lazy var guidePosition: CGFloat = {
         var lineRectCount = 0
@@ -79,4 +81,8 @@ class TextView: NSTextView {
         let w = bounds.size.width
         return NSOffsetRect(NSMakeRect(0, y, w, h), textContainerOrigin.x, textContainerOrigin.y)
     }
+}
+
+class DebugTextView: TextView{
+    
 }
