@@ -200,8 +200,13 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
         let syntaxMap = NSMutableString(data: syntaxPipe.fileHandleForReading.readDataToEndOfFile(),
             encoding: NSUTF8StringEncoding)
         
-       
-        return String(syntaxMap)
+        let o = try! NSJSONSerialization.JSONObjectWithData(syntaxMap!.dataUsingEncoding(NSUTF8StringEncoding)!,
+            options: []) as! NSDictionary
+        
+        let diagnostics = o["key.diagnostics"]
+        
+        
+        return String(diagnostics)
         
         
     }
