@@ -126,7 +126,28 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
             }
         }
         
-         debugParseString(textStorage!.string)
+        
+        // BEGIN DEBUG
+        let debugStr  = debugParseString(textStorage!.string)
+        app.debugTextView?.string = debugStr
+        guard let debugTokens = parseString(debugStr) else {
+            return
+        }
+        //print(debugTokens)
+        
+        // todo highlight the debug textStorage
+        let debugLayoutManagerList = app.debugTextView!.textStorage!.layoutManagers as [NSLayoutManager]
+        for layoutManager in debugLayoutManagerList {
+            layoutManager.delegate = self
+            layoutManager.removeTemporaryAttribute(SWIFT_ELEMENT_TYPE_KEY,
+                forCharacterRange: range)
+            
+            for token in debugTokens {
+                layoutManager.addTemporaryAttributes([SWIFT_ELEMENT_TYPE_KEY: token.kind],
+                    forCharacterRange: token.range)
+            }
+        }
+        
     }
 
     func parseString(string: String) -> [Token]? {
@@ -159,11 +180,11 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
             return Token(kind: type, range: NSRange(location: offset, length: length))
         }
     }
-    
-    func debugParseString(string: String) {
+
+    func debugParseString(string: String)->String{
         // Shell out to SourceKitten to obtain syntax map for string
         if(string.isEmpty){
-            return
+            return ""
         }
         
         let syntaxPipe = NSPipe()
@@ -180,7 +201,9 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
             encoding: NSUTF8StringEncoding)
         
        
-        app.debugTextView?.string  = String(syntaxMap)
+        return String(syntaxMap)
+        
+        
     }
 
     override func textStorageDidProcessEditing(aNotification: NSNotification) {
