@@ -82,7 +82,9 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
     var textView: NSTextView?
     var scrollView: NSScrollView?
     var debugScrollView: NSScrollView?
-   let app = NSApplication.sharedApplication().delegate as! AppDelegate
+    let app = NSApplication.sharedApplication().delegate as! AppDelegate
+    var currentDiagnostics:String = ""
+    
     
     convenience init(textStorage: NSTextStorage, textView: NSTextView, scrollView: NSScrollView ) {
         self.init()
@@ -126,15 +128,27 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
             }
         }
         
+        self.performSelector("lazyDebug", withObject: [], afterDelay: 5)
+     
         
+    }
+    
+    func lazyDebug(){
+        NSObject.cancelPreviousPerformRequestsWithTarget(self)
         // BEGIN DEBUG
         let debugStr  = debugParseString(textStorage!.string)
+        if(debugStr == currentDiagnostics){
+            print("same text")
+            return
+        }
+        currentDiagnostics = debugStr
         app.debugTextView?.string = debugStr
         guard let debugTokens = parseString(debugStr) else {
             return
         }
         //print(debugTokens)
         
+        let range = visibleRange()
         // todo highlight the debug textStorage
         let debugLayoutManagerList = app.debugTextView!.textStorage!.layoutManagers as [NSLayoutManager]
         for layoutManager in debugLayoutManagerList {
@@ -147,7 +161,6 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
                     forCharacterRange: token.range)
             }
         }
-        
     }
 
     func parseString(string: String) -> [Token]? {
@@ -200,15 +213,22 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
         let syntaxMap = NSMutableString(data: syntaxPipe.fileHandleForReading.readDataToEndOfFile(),
             encoding: NSUTF8StringEncoding)
         
-        let o = try! NSJSONSerialization.JSONObjectWithData(syntaxMap!.dataUsingEncoding(NSUTF8StringEncoding)!,
-            options: []) as! NSDictionary
-        
-        let diagnostics = o["key.diagnostics"]
-        
-        
-        return String(diagnostics)
+        var json = JSON(data: syntaxMap!.dataUsingEncoding(NSUTF8StringEncoding)!)
+
+        json["key.substructure"] = []
         
         
+        for (idx,_) in json["key.diagnostics"].enumerate(){
+            json["key.diagnostics"][idx]["key.fixits"] = "" // turn this off so we don't force a refresh each time
+            //json["key.diagnostics"][idx]["key.column"] = ""
+            json["key.length"] = ""
+        }
+        
+   
+
+        return json.rawString()!
+
+       
     }
 
     override func textStorageDidProcessEditing(aNotification: NSNotification) {
@@ -227,4 +247,8 @@ class SwiftSyntaxHighligher: NSObject, NSTextStorageDelegate, NSLayoutManagerDel
         }
         return attrs
     }
+    
+
+    
+
 }

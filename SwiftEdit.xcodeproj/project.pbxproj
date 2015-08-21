@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5D611CF81B86CAC6003515BF /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D611CF71B86CAC6003515BF /* SwiftyJSON.swift */; };
 		9220337C194C08B100AC6E61 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9220337B194C08B100AC6E61 /* AppDelegate.swift */; };
 		9220337E194C08B100AC6E61 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9220337D194C08B100AC6E61 /* Images.xcassets */; };
 		92203381194C08B100AC6E61 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9220337F194C08B100AC6E61 /* MainMenu.xib */; };
@@ -29,6 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5D611CF71B86CAC6003515BF /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		92203374194C08B100AC6E61 /* SwiftEdit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftEdit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		92203378194C08B100AC6E61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9220337B194C08B100AC6E61 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -62,9 +64,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5D611CEB1B86CA72003515BF /* External */ = {
+			isa = PBXGroup;
+			children = (
+				5D611CF61B86CAC6003515BF /* SwiftyJSON */,
+			);
+			name = External;
+			path = SwiftEdit/External;
+			sourceTree = "<group>";
+		};
+		5D611CF61B86CAC6003515BF /* SwiftyJSON */ = {
+			isa = PBXGroup;
+			children = (
+				5D611CF71B86CAC6003515BF /* SwiftyJSON.swift */,
+			);
+			path = SwiftyJSON;
+			sourceTree = "<group>";
+		};
 		9220336B194C08B000AC6E61 = {
 			isa = PBXGroup;
 			children = (
+				5D611CEB1B86CA72003515BF /* External */,
 				92203376194C08B100AC6E61 /* SwiftEdit */,
 				92203389194C08B100AC6E61 /* SwiftEditTests */,
 				92203375194C08B100AC6E61 /* Products */,
@@ -227,6 +247,7 @@
 				9220337C194C08B100AC6E61 /* AppDelegate.swift in Sources */,
 				9220339919501CCC00AC6E61 /* TextView.swift in Sources */,
 				92203397194C095D00AC6E61 /* RulerView.swift in Sources */,
+				5D611CF81B86CAC6003515BF /* SwiftyJSON.swift in Sources */,
 				922033A3195173D700AC6E61 /* SwiftSyntaxHighligher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
